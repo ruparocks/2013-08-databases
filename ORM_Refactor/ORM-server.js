@@ -13,29 +13,7 @@ var Message = sequelize.define('Message', {
   text: Sequelize.STRING
 });
 
-// Message.sync().success(function() {
-//   var newMessage = Message.build({username:'rupa', text:'TGIS'});
-
-//   newMessage.save().success(function() {
-//     console.log('save');
-//     // newMessage.findAll({ where: {username: "rupa"} }).success(function(msgs) {
-//     //   for (var i = 0; i < msgs.length; i++) {
-//     //     console.log(msgs[i].username + ": " + msgs[i].text);
-//     //   }
-//     // });
-//   });
-// });
-// var dbConnection = mysql.createConnection({
-//   user: "root",
-//   //password: "",
-//   database: "chat"
-// });
-
-// dbConnection.connect();
-
-
 var server = http.createServer(function(req, res){
-  //TODO maybe change
   req.database = Message;
   handler.requestRouter(req, res);
 });
@@ -43,4 +21,3 @@ var server = http.createServer(function(req, res){
 console.log("Listening on http://" + ip + ":" + port);
 server.listen(port, ip);
 
-// dbConnection.end();

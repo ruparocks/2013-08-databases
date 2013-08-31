@@ -4,6 +4,13 @@ var _ = require('underscore');
 var fs = require('fs');
 var moment = require('moment');
 
+var responseHeaders = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "access-control-allow-headers": "content-type, accept",
+    "access-control-max-age": 10 // Seconds.
+};
+
 module.exports.requestRouter = function (request, response) {
   var urlObj = url.parse(request.url);
   if (urlObj.path === '/') {
@@ -32,23 +39,11 @@ module.exports.requestRouter = function (request, response) {
   }
 };
 
-var messageHandler = function(request, response) {
-  response.writeHead(201, responseHeaders);
-
-  request.on('data', function(data) {
-    var messageObj = {};
-    var database = request.database;
-    var messageData = JSON.parse(data.toString());
-
-    messageObj.username = messageData.username;
-    messageObj.text = messageData.text;
-
-    insertMessageQuery(messageObj, database);
-  });
-
-  request.on('end', function() {
-     response.end();
-  });
+var write = function(data, response, responseHeaders) {
+  var dataString = data.toString();
+  response.writeHead(200, responseHeaders);
+  response.write(dataString);
+  response.end();
 };
 
 var insertMessageQuery = function(obj, database) {
@@ -57,39 +52,6 @@ var insertMessageQuery = function(obj, database) {
   newMessage.save().success(function() {
     console.log('success');
   });
-};
-
-
-var sendMessageHandler = function(request, response) {
-  var messageObj = {};
-    messageObj.results = [];
-
-  var database = request.database;
-  var query = database.findAll().success(function(msgs) {
-    _.each(msgs, function(msg) {
-      messageObj.results.push(msg.dataValues);
-    });
-
-    responseHeaders['Content-Type'] = 'application/json';
-    response.writeHead(200, responseHeaders);
-    response.write(JSON.stringify(messageObj));
-    response.end();
-  });
-};
-
-
-var responseHeaders = {
-    "access-control-allow-origin": "*",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-headers": "content-type, accept",
-    "access-control-max-age": 10 // Seconds.
-};
-
-var write = function(data, response, responseHeaders) {
-  var dataString = data.toString();
-  response.writeHead(200, responseHeaders);
-  response.write(dataString);
-  response.end();
 };
 
 var sendIndex = function(response) {
@@ -116,3 +78,40 @@ var sendRemaining = function(path, response) {
     });
   }
 };
+
+var messageHandler = function(request, response) {
+  response.writeHead(201, responseHeaders);
+
+  request.on('data', function(data) {
+    var messageObj = {};
+    var database = request.database;
+    var messageData = JSON.parse(data.toString());
+
+    messageObj.username = messageData.username;
+    messageObj.text = messageData.text;
+
+    insertMessageQuery(messageObj, database);
+  });
+
+  request.on('end', function() {
+     response.end();
+  });
+};
+
+var sendMessageHandler = function(request, response) {
+  var messageObj = {};
+    messageObj.results = [];
+
+  var database = request.database;
+  var query = database.findAll().success(function(msgs) {
+    _.each(msgs, function(msg) {
+      messageObj.results.push(msg.dataValues);
+    });
+
+    responseHeaders['Content-Type'] = 'application/json';
+    response.writeHead(200, responseHeaders);
+    response.write(JSON.stringify(messageObj));
+    response.end();
+  });
+};
+
