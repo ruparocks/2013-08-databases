@@ -47,15 +47,15 @@ var messageHandler = function(request, response) {
   });
 
   request.on('end', function() {
-    response.end();
+     response.end();
   });
 };
 
 var insertMessageQuery = function(obj, database) {
-  database.query('INSERT INTO messages SET ?', obj, function(err, result) {
-    if (err) {
-      throw new Error(err, '</3');
-    }
+  var newMessage = database.build(obj);
+
+  newMessage.save().success(function() {
+    console.log('success');
   });
 };
 
@@ -68,28 +68,13 @@ var sendMessageHandler = function(request, response) {
   var query = database.findAll().success(function(msgs) {
     _.each(msgs, function(msg) {
       messageObj.results.push(msg.dataValues);
-      //console.log('messageObj in each', messageObj);
     });
+
     responseHeaders['Content-Type'] = 'application/json';
     response.writeHead(200, responseHeaders);
     response.write(JSON.stringify(messageObj));
     response.end();
   });
-
-
-//var query = database.query('SELECT * FROM messages');
-
-
-  //console.log('database from get', database);
-  console.log('message', messageObj);
-
-  // query.on('result', function(row) {
-  //   messageObj.results.push(row);
-  // });
-
-  // query.on('end', function() {
-    
-  // });
 };
 
 
