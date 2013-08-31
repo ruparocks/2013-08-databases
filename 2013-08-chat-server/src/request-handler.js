@@ -36,11 +36,21 @@ var messageHandler = function(request, response) {
   response.writeHead(201, responseHeaders);
 
   request.on('data', function(data) {
+    var messageObj = {};
     var database = request.database;
     var messageData = JSON.parse(data.toString());
-    var username = messageData.username;
-    var message = messageData.text;
-    insertMessageQuery(username, message, new Date(), database);
+    messageObj['username'] = messageData.username;
+    messageObj['text'] = messageData.text;
+    messageObj['created_At'] = new Date();
+    messageObj['room_id'] = 'test';
+    database.query('INSERT INTO messages SET ?', messageObj, function(err, result) {
+      if (err) {
+        throw new Error(err, '</3');
+      }
+
+      console.log(result);
+    });
+    //insertMessageQuery(username, message, new Date(), database);
   });
 
   request.on('end', function() {
@@ -48,9 +58,15 @@ var messageHandler = function(request, response) {
   });
 };
 
-var insertMessageQuery = function(username, createdAt, message, database) {
-  database.query(/.../);
-};
+// var insertMessageQuery = function(username, createdAt, message, database) {
+//   database.query('INSERT into messages (username, text, created_At) VALUES (' + username + ',' + message + ',' + createdAt + ');', function(err, row) {
+//     if (err) {
+//       throw new Error('</3');
+//     }
+
+//     console.log('row', row);
+//   });
+// };
 
 var responseHeaders = {
     "access-control-allow-origin": "*",
@@ -92,9 +108,9 @@ var sendRemaining = function(path, response) {
 };
 
 var sendMessageHandler = function(request, response) {
-  responseHeaders['Content-Type'] = 'application/json';
-  response.writeHead(200, responseHeaders);
+  // responseHeaders['Content-Type'] = 'application/json';
+  // response.writeHead(200, responseHeaders);
 
-    response.write(JSON.stringify(dbResponse));
-    response.end();
+  //   response.write(JSON.stringify(dbResponse));
+  //   response.end();
   };

@@ -7,7 +7,7 @@ CREATE TABLE messages (
   text TEXT(160),
   created_At TIMESTAMP,
   room_id INT,
-  user_id INT,
+  username VARCHAR(20),
   PRIMARY KEY(id)
 );
 

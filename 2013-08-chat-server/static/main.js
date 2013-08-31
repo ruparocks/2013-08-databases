@@ -4,7 +4,7 @@ $(document).ready(function() {
   var friends = {};
   var room = {};
 
-  $.ajax('http://127.0.0.1:8080/', {
+  $.ajax('http://127.0.0.1:8080/1/classes/messages', {
     contentType: 'application/json',
     success: function(data){
       mostRecent = data.results[0].createdAt;
@@ -43,7 +43,7 @@ $(document).ready(function() {
   };
 
   var postMessage = function(messageData){
-    $.ajax('http://127.0.0.1:8080/', {
+    $.ajax('http://127.0.0.1:8080/1/classes/messages', {
       contentType: 'application/json',
       type: 'POST',
       data: JSON.stringify(messageData),
