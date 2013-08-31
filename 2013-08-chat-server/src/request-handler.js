@@ -39,18 +39,13 @@ var messageHandler = function(request, response) {
     var messageObj = {};
     var database = request.database;
     var messageData = JSON.parse(data.toString());
-    messageObj['username'] = messageData.username;
-    messageObj['text'] = messageData.text;
+
+    messageObj.username = messageData.username;
+    messageObj.text = messageData.text;
     messageObj['created_At'] = new Date();
     messageObj['room_id'] = 'test';
-    database.query('INSERT INTO messages SET ?', messageObj, function(err, result) {
-      if (err) {
-        throw new Error(err, '</3');
-      }
 
-      console.log(result);
-    });
-    //insertMessageQuery(username, message, new Date(), database);
+    insertMessageQuery(messageObj, database);
   });
 
   request.on('end', function() {
@@ -58,15 +53,15 @@ var messageHandler = function(request, response) {
   });
 };
 
-// var insertMessageQuery = function(username, createdAt, message, database) {
-//   database.query('INSERT into messages (username, text, created_At) VALUES (' + username + ',' + message + ',' + createdAt + ');', function(err, row) {
-//     if (err) {
-//       throw new Error('</3');
-//     }
+var insertMessageQuery = function(obj, database) {
+  database.query('INSERT INTO messages SET ?', obj, function(err, result) {
+    if (err) {
+      throw new Error(err, '</3');
+    }
 
-//     console.log('row', row);
-//   });
-// };
+    console.log(result);
+  });
+};
 
 var responseHeaders = {
     "access-control-allow-origin": "*",
