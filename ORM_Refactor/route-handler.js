@@ -61,21 +61,33 @@ var insertMessageQuery = function(obj, database) {
 
 
 var sendMessageHandler = function(request, response) {
-  var database = request.database;
-  var query = database.query('SELECT * FROM messages');
   var messageObj = {};
     messageObj.results = [];
 
-  query.on('result', function(row) {
-    messageObj.results.push(row);
+  var database = request.database;
+  var query = database.findAll().success(function(msgs) {
+    _.each(msgs, function(msg) {
+      messageObj.results.push(msg.dataValues);
+    });
   });
 
-  query.on('end', function() {
-    responseHeaders['Content-Type'] = 'application/json';
-    response.writeHead(200, responseHeaders);
-    response.write(JSON.stringify(messageObj));
-    response.end();
-  });
+
+//var query = database.query('SELECT * FROM messages');
+  
+
+  //console.log('database from get', database);
+  console.log('query', query);
+
+  // query.on('result', function(row) {
+  //   messageObj.results.push(row);
+  // });
+
+  // query.on('end', function() {
+  //   responseHeaders['Content-Type'] = 'application/json';
+  //   response.writeHead(200, responseHeaders);
+  //   response.write(JSON.stringify(messageObj));
+  //   response.end();
+  // });
 };
 
 

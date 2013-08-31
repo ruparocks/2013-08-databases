@@ -35,7 +35,8 @@ var Message = sequelize.define('Message', {
 
 
 var server = http.createServer(function(req, res){
-  //req.database = dbConnection;
+  //TODO maybe change
+  req.database = Message;
   handler.requestRouter(req, res);
 });
 
