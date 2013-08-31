@@ -7,10 +7,11 @@ $(document).ready(function() {
   $.ajax('http://127.0.0.1:8080/1/classes/messages', {
     contentType: 'application/json',
     success: function(data){
-      mostRecent = data.results[0].createdAt;
+      mostRecent = data.results[0].created_At;
+
       _.each(data.results, function(userData) {
         var username = userData.username || 'visitor';
-        var date = moment(userData.createdAt).fromNow();
+        var date = userData.created_At;
         var message = username + ': ' + userData.text + ', ' + date;
 
         if (userData.hasOwnProperty('roomname')) {

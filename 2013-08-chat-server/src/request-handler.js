@@ -58,10 +58,28 @@ var insertMessageQuery = function(obj, database) {
     if (err) {
       throw new Error(err, '</3');
     }
-
-    console.log(result);
   });
 };
+
+
+var sendMessageHandler = function(request, response) {
+  var database = request.database;
+  var query = database.query('SELECT * FROM messages');
+  var messageObj = {};
+    messageObj.results = [];
+
+  query.on('result', function(row) {
+    messageObj.results.push(row);
+  });
+
+  query.on('end', function() {
+    responseHeaders['Content-Type'] = 'application/json';
+    response.writeHead(200, responseHeaders);
+    response.write(JSON.stringify(messageObj));
+    response.end();
+  });
+};
+
 
 var responseHeaders = {
     "access-control-allow-origin": "*",
@@ -101,11 +119,3 @@ var sendRemaining = function(path, response) {
     });
   }
 };
-
-var sendMessageHandler = function(request, response) {
-  // responseHeaders['Content-Type'] = 'application/json';
-  // response.writeHead(200, responseHeaders);
-
-  //   response.write(JSON.stringify(dbResponse));
-  //   response.end();
-  };
