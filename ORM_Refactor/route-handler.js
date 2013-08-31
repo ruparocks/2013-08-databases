@@ -42,8 +42,6 @@ var messageHandler = function(request, response) {
 
     messageObj.username = messageData.username;
     messageObj.text = messageData.text;
-    messageObj['created_At'] = new Date();
-    messageObj['room_id'] = 'test';
 
     insertMessageQuery(messageObj, database);
   });
@@ -108,12 +106,12 @@ var sendIndex = function(response) {
 
 var sendRemaining = function(path, response) {
   if (path.indexOf('.css') !== -1) {
-    fs.readFile(__dirname + '/..' + path, function(err, data) {
+    fs.readFile('/Users/hackreactor/code/kbrainwave/2013-08-databases/2013-08-chat-server/'+ path, function(err, data) {
       responseHeaders['Content-Type'] = 'text/css';
       write(data, response, responseHeaders);
     });
   } else {
-    fs.readFile(__dirname + '/..' + path, function(err, data) {
+    fs.readFile('/Users/hackreactor/code/kbrainwave/2013-08-databases/2013-08-chat-server/' + path, function(err, data) {
       responseHeaders['Content-Type'] = 'text/javscript';
       write(data, response, responseHeaders);
     });
